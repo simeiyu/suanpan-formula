@@ -20,7 +20,7 @@ let paths = {
 };
 
 gulp.task('less', function () {
-  gulp.src(['./css/formula.less', './css/modal.less'])
+  gulp.src(['./css/app.less'])
     .pipe(less())
     .pipe(gulp.dest('./css'));
 });
