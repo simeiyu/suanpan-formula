@@ -1,0 +1,26 @@
+<div>
+  <!-- 公式编辑器 -->
+  <div class="modal-header">
+    <div class="modal-list clearfix">
+      <div class="modal-desc pull-left">{{popupTitle}}</div>
+      <span class="close modal-close pull-right" ng-click="cancel()">&times;</span>
+    </div>
+  </div>
+  <div class="modal-body" ng-hide="popupLoading || popupNotice" ng-class="{ 'modal-has-footer': popupHasFooter }">
+    <div style="width: 1105px; height: 568px; overflow: hidden;" class="dialog-data-exploration formula">
+      <!-- 弹窗内容 -->
+    </div>
+  </div>
+  <div class="mask-loading" ng-if="popupLoading">
+    <i class="fa fa-spinner loading-icon animation-spin"></i>
+  </div>
+  <div class="mask-loading" ng-if="popupNotice">
+    <span class="loading-text">{{popupNotice}}</span>
+  </div>
+  <div class="modal-footer" style="background-color: #f9f9f9; padding: 5px 10px;"
+    ng-class="{ 'modal-has-footer': popupHasFooter }" ng-hide="popupLoading || popupNotice">
+
+    <button type="button" class="btn btn-xs btn-info" ng-click="ok()">确认</button>
+    <button type="button" class="btn btn-xs" ng-click="cancel()">取消</button>
+  </div>
+</div>
