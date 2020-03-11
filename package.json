@@ -3,7 +3,7 @@
   "author": "Aliyun-dev",
   "license": "GPL",
   "dependencies": {
-    "angular": "1.7.5",
+    "angular": "1.7.9",
     "angular-animate": "1.7.5",
     "angular-aria": "1.7.5",
     "angular-bindonce": "^0.3.1",
