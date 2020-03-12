@@ -24,6 +24,7 @@
     "angularjs-toaster": "~2.2.0"
   },
   "devDependencies": {
+    "browser-sync": "^2.26.7",
     "del": "^3.0.0",
     "ejs-mate": "^2.3.0",
     "gulp": "^3.9.1",
@@ -46,6 +47,7 @@
     "gulp-uglify-chylvina": "^3.2.0",
     "gulp-useref": "^3.1.4",
     "gulp-util": "^3.0.8",
+    "gulp-watch": "^5.0.1",
     "moment": "^2.20.1"
   }
 }
