@@ -29,7 +29,7 @@ gulp.task('less', function () {
 
 gulp.task('html', function () {
   gulp.src(['./tpl/*.html'])
-    .pipe(gulp.dest('dist/tpl/*.html'));
+    .pipe(gulp.dest('./tpl/*.html'));
 });
 
 gulp.task('browser', function(){
