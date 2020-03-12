@@ -3,7 +3,8 @@ var app = angular.module('app', [
   // 'ngMaterial',
   'ngAnimate',
   // 'ngSanitize',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'angularBootstrapNavTree'
 ]);
 app.controller('myCtrl', function($scope, $uibModal) {
   $scope.node = {
@@ -26,22 +27,22 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "defInPortUuid": "in1"
           },
           "outputData1": {
-            "type": "string",
+            "type": "array",
             "propertyName": "dataName",
             "defOutPortUuid": "out1"
           },
           "inputData2": {
-            "type": "string",
+            "type": "date",
             "propertyName": "dataName",
             "defInPortUuid": "in2"
           },
           "inputData3": {
-            "type": "string",
+            "type": "number",
             "propertyName": "dataName",
             "defInPortUuid": "in3"
           },
           "inputData4": {
-            "type": "string",
+            "type": "array",
             "propertyName": "dataName",
             "defInPortUuid": "in4"
           },
@@ -248,6 +249,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
   var popup;
   
   $scope.showFormulaEidtor = function (controlInstUuid) {
+    var nodeEl = $scope.node;
     popup = $uibModal.open({
       animation: true,
       templateUrl: 'tpl/formulaEditor.html',
@@ -258,9 +260,56 @@ app.controller('myCtrl', function($scope, $uibModal) {
           $scope.popupHasFooter = true;
 
           $scope.popupLoading = false;
-          $scope.popupNotice = 'Hello，雪宝！';
 
-          var node = $scope.node;
+          formatField = function(field) {
+            let result = {...field};
+            result.typeLabel = result.type;
+            result.labelClass = '';
+            switch(field.type) {
+              case 'string':
+                result.typeLabel = '文本';
+                result.labelClass = 'string-label'
+                break;
+              case 'array':
+                result.typeLabel = '数组';
+                result.labelClass = 'array-label'
+                break;
+              case 'number':
+                result.typeLabel = '数字';
+                result.labelClass = 'number-label'
+                break;
+              case 'date':
+                result.typeLabel = '时间戳';
+                result.labelClass = 'time-label'
+                break;
+            }
+            return result;
+          }
+
+          var paramsList = {...nodeEl.metadata.def.params}
+          var paramsKeyList = Object.keys(paramsList);
+          var currFieldList = [];
+          paramsKeyList.forEach(key => {
+            if(paramsList[key].defInPortUuid) {
+              const inputField = paramsList[key];
+              const newield = formatField(inputField);
+              currFieldList.push(newield);
+            }
+          })
+          $scope.currFieldList = currFieldList
+
+
+          $scope.formularList = [{
+            label: '常用函数',
+            children: ['IF']
+          },{
+            label: '逻辑函数',
+            children: ['AND','OR']
+          }]
+
+          $scope.handleTreeSelect = function(branch) {
+            console.log("aaaaaaaaaaa", branch)
+          }
 
           $scope.ok = function () {
             popup.close();

@@ -6,3 +6,171 @@ body {
   font-size: 14px;
   color: #333;
 }
+.mainContainer {
+  justify-content: center;
+  height: 100%;
+  overflow: auto;
+  background-color: #ffffff;
+  // padding: 20px;
+  .headerBlock {
+    height: 40px;
+    background-color: rgba( 72, 209, 204, 1);
+    position: relative;
+    color: rgba(255, 255, 255, 1);
+    font-size:20px;
+    font-family:PingFang SC;
+    font-weight:500;
+    .headerTitle {
+      width: auto;
+      line-height: 40px;
+      position: absolute;
+      left: 50%;
+      transform: translate( -50% , 0);
+      letter-spacing: 2px;
+    }
+    .headerBtn {
+      float: right;
+      height: 40px;
+      width: 40px;
+      .close-icon {
+        height: 40px;
+        width: 40px;
+        font-size:30px;
+        text-align: center;
+      }
+      &:hover {
+        background: rgba(252, 56, 56, 1);
+      }
+    }
+  }
+  .mainBlock {
+    height: 100%;
+    .editBlock {
+      height: 45%;
+      border:1px solid rgba(220,220,220,1);
+      border-radius:4px;
+      .blockHeader {
+         height: 50px;
+         background-color: rgba(231, 240, 240, 0.5);
+         line-height: 50px;
+         font-size:20px;
+         font-family:PingFang SC;
+         padding: 0 20px
+      }
+      .inputArea {
+        font-size:20px;
+        resize: none;
+        height: calc( 100% - 50px);
+        width: 100%;
+        :global {
+          .react-codemirror2 {
+            height: 100%;
+            .CodeMirror {
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+    .selectBlock {
+      height: 55%;
+      display: flex;
+      .commonBox {
+        height: 100%;
+        .boxTitle {
+          height: 15%;
+          line-height: 60px;
+          font-size:20px;
+          font-family:PingFang SC;
+          color: rgba(170, 170, 170, 1);
+          letter-spacing: 1px;
+        }
+        .boxContent {
+          height: 85%;
+          border:1px solid rgba(220,220,220,1);
+          border-radius:4px;
+          overflow-y: auto;
+        }
+      }
+      .box1 {
+        width: 30%;
+        margin-right: 20px;
+        // tab
+        // .tab-content {
+        //   height: auto;
+        // }
+        // .nav-tabs {
+        //   background-color: #ffffff;
+        // }
+        // .nav-tabs > li > a {
+        //   font-size: 16px;
+        //   padding: 12px 15px;
+        //   color: #333;
+        // }
+        // .nav-tabs.nav-justified > li {
+        //   border-bottom: 1px solid #ddd;
+        // }
+        // .nav-tabs.nav-justified > li > a {
+        //   border-bottom: none;
+        //   border-radius: none;
+        // }
+        // .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        //   color: rgb(2, 199, 192);
+        //   background-color: #fff;
+        //   border: none;
+        //   border-bottom-color: rgb(2, 199, 192);
+        //   border-bottom: 2px solid rgb(2, 199, 192);
+        // }
+        // list
+        .list-group-item {
+          border: none;
+          cursor: pointer;
+          &:hover {
+            background-color: rgb(167, 220, 255);
+          }
+        }
+        .string-label {
+          color: rgba(7, 221, 210, 1);
+          background-color: rgba(7, 221, 210, 0.3);
+        }
+        .array-label {
+          color: rgba(100, 100, 100, 1);
+          background-color:rgba(100, 100, 100, 0.3);
+        }
+        .number-label {
+          color: rgba(201, 183, 25,1);
+          background-color: rgba(255, 251, 2, 0.3);
+        }
+        .time-label {
+          color: rgba(27, 223, 1, 1);
+          background-color: rgba(27, 223, 1, 0.3);
+        }
+      }
+      .box2 {
+        width: 20%;
+        margin-right: 20px;
+        ul.abn-tree li.abn-tree-row {
+          background: #ffffff;
+          color: #333;
+          &:hover {
+            background-color: rgb(167, 220, 255);
+          }
+          a {
+            color: #333;
+          }
+        }
+        .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+          color: #333;
+          background-color: rgb(167, 220, 255);
+        }
+      }
+      .box3 {
+        width: 50%;
+      }
+    }
+  }
+  .footerBlock {
+    height: 40px;
+  }
+
+}

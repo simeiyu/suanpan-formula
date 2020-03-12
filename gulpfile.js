@@ -32,6 +32,11 @@ gulp.task('html', function () {
     .pipe(gulp.dest('./tpl/*.html'));
 });
 
+gulp.task('js', function () {
+  gulp.src(['./js/*.js'])
+    .pipe(gulp.dest('./js/*.js'));
+});
+
 gulp.task('browser', function(){
   browserSync.init({
       server: './'    // 访问目录，自动指向该目录下的 index.html 文件
@@ -41,6 +46,7 @@ gulp.task('browser', function(){
 gulp.task('watch', function () {
   w('./tpl/*.html', 'html');
   w('./css/*.less', 'less');
+  w('./js/*.js', 'js');
 
   function w(path, task){
       watch(path, function () {
