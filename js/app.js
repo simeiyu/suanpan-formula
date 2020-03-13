@@ -256,6 +256,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
       controller: ['$scope',
         function ($scope) {
           $scope.popupTitle = '编辑公式';
+          $scope.inputAttr = '输出1'
           // $scope.popupLoading = true;
           $scope.popupHasFooter = true;
 
@@ -301,10 +302,15 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
           $scope.formularList = [{
             label: '常用函数',
-            children: ['IF']
+            children: [
+              {label: 'IF', format: 'IF(A,B,C)', description: '表示如果满足条件A，那么返回B，否则返回C'}
+            ]
           },{
             label: '逻辑函数',
-            children: ['AND','OR']
+            children: [
+              {label: 'AND', format: 'AND(逻辑表达式1,逻辑表达式2,...)', description: '如果所有参数都为真，AND函数返回布尔值true，否则返回布尔值 false'},
+              {label: 'OR', format: 'OR(逻辑表达式1,逻辑表达式2,...)', description: '如果任意参数为真，OR 函数返回布尔值true；如果所有参数为假，返回布尔值false。'},
+            ]
           }]
 
           $scope.handleTreeSelect = function(branch) {
