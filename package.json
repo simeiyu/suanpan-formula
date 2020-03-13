@@ -19,9 +19,11 @@
     "angular-sanitize": "1.7.5",
     "angular-ui-bootstrap": "^2.5.6",
     "angular-ui-calendar": "latest",
+    "angular-ui-codemirror": "^0.3.0",
     "angular-ui-grid": "^4.6.3",
     "angular-ui-utils": "~0.1.1",
-    "angularjs-toaster": "~2.2.0"
+    "angularjs-toaster": "~2.2.0",
+    "codemirror": "^5.52.0"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",

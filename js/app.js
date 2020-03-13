@@ -4,7 +4,8 @@ var app = angular.module('app', [
   'ngAnimate',
   // 'ngSanitize',
   'ui.bootstrap',
-  'angularBootstrapNavTree'
+  'angularBootstrapNavTree',
+  'ui.codemirror'
 ]);
 app.controller('myCtrl', function($scope, $uibModal) {
   $scope.node = {
@@ -251,11 +252,12 @@ app.controller('myCtrl', function($scope, $uibModal) {
   $scope.showFormulaEidtor = function (controlInstUuid) {
     var nodeEl = $scope.node;
     popup = $uibModal.open({
+      backdrop: 'static',
       animation: true,
       templateUrl: 'tpl/formulaEditor.html',
       controller: ['$scope',
         function ($scope) {
-          $scope.popupTitle = '编辑公式';
+          $scope.popupTitle = '编辑公式'
           $scope.inputAttr = '输出1'
           // $scope.popupLoading = true;
           $scope.popupHasFooter = true;
@@ -265,27 +267,112 @@ app.controller('myCtrl', function($scope, $uibModal) {
           formatField = function(field) {
             let result = {...field};
             result.typeLabel = result.type;
-            result.labelClass = '';
+            result.labelClass = ''
             switch(field.type) {
               case 'string':
-                result.typeLabel = '文本';
+                result.typeLabel = '文本'
                 result.labelClass = 'string-label'
                 break;
               case 'array':
-                result.typeLabel = '数组';
+                result.typeLabel = '数组'
                 result.labelClass = 'array-label'
                 break;
               case 'number':
-                result.typeLabel = '数字';
+                result.typeLabel = '数字'
                 result.labelClass = 'number-label'
                 break;
               case 'date':
-                result.typeLabel = '时间戳';
+                result.typeLabel = '时间戳'
                 result.labelClass = 'time-label'
                 break;
             }
             return result;
           }
+
+          handleShowHint = function () {
+            // const codeMirrorInstance = this.codeEditorRef.getCodeMirrorInstance();
+            // this.codeEditor = this.codeEditorRef.getCodeMirror();
+            // const cur = this.codeEditor.getCursor();
+            // const curLine = this.codeEditor.getLine(cur.line);
+            // const end = cur.ch;
+            // const start = end;
+            // let list = [];
+            // // 根据不同情况给list赋值，默认为[]，即不显示提示框。
+            // const cursorOneCharactersBefore = `${curLine.charAt(start - 1)}`;
+            // const fomularList = [...this.fomularList];
+            // if(cursorOneCharactersBefore === 'I'){
+            //   list = ['IF', 'IF1'];
+            // } else if (cursorOneCharactersBefore === 'A') {
+            //   list = ['AND'];
+            // }
+            // return {list: list, from: codeMirrorInstance.Pos(cur.line, start), to: codeMirrorInstance.Pos(cur.line, end)};
+          }
+
+          $scope.editorOptions = {
+            mode: 'text/html',
+            placeholder: '请输入公式',
+            // mode:"text/html", //实现代码高亮,
+            matchBrackets: true,   //括号匹配
+            autoCloseBrackets:true,	// 是否自动闭合括号
+            // extraKeys: {"Ctrl": "autocomplete"},
+            indentUnit: 0, //缩进单位，值为空格数，默认为2 
+            smartIndent: false, // 自动缩进,
+            lineWrapping: true, // false->scroll, true-> word-break,
+            autofocus: true,
+          };
+
+          $scope.fomularEditorValue = ""
+
+          $scope.codemirrorLoaded = function(_editor){
+            // Editor part
+            $scope._editor = _editor;
+            var _doc = _editor.getDoc();
+            _editor.focus();
+
+            handleShowHint = function () {
+              const codeEditor = _editor;
+              const codeMirrorInstance = _editor.constructor;
+              const cur = codeEditor.getCursor();
+              const curLine = codeEditor.getLine(cur.line);
+              const end = cur.ch;
+              const start = end;
+              let list = [];
+              // 根据不同情况给list赋值，默认为[]，即不显示提示框。
+              const cursorOneCharactersBefore = `${curLine.charAt(start - 1)}`;
+              if(cursorOneCharactersBefore === 'I'){
+                list = ['IF','aaaaa'];
+              } else if (cursorOneCharactersBefore === 'A') {
+                list = ['AND'];
+              }
+              return {list: list, from: codeMirrorInstance.Pos(cur.line, start-1), to: codeMirrorInstance.Pos(cur.line, end)};
+            }
+            // Options
+            _editor.setOption('hintOptions', {hint: handleShowHint, completeSingle: false});
+            _doc.markClean();
+        
+            // Events
+            _editor.on("beforeChange", function(){
+              console.log("beforeChange")
+
+            });
+            _editor.on("change", function(instance, changeObj){
+               console.log("change", instance, changeObj)
+               instance.closeHint();
+               instance.showHint();
+               if (changeObj.origin === "complete") {
+                const from = {line: changeObj.from.line, ch: changeObj.from.ch};
+                const length = changeObj.text[0].split("").length;
+                const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
+                instance.markText(from,to,{className: 'cm-keyword', selectRight: true, atomic: true})
+               }
+               if (changeObj.origin === "custom_add") {
+                const from = {line: changeObj.from.line, ch: changeObj.from.ch};
+                const length = changeObj.text[0].split("").length;
+                const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
+                instance.markText(from,to,{className: 'cm-field-name', selectRight: true, atomic: true})
+               }
+            });
+          };
 
           var paramsList = {...nodeEl.metadata.def.params}
           var paramsKeyList = Object.keys(paramsList);
@@ -315,6 +402,21 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
           $scope.handleTreeSelect = function(branch) {
             console.log("aaaaaaaaaaa", branch)
+          }
+
+          $scope.handleClickAddField = function(field) {
+            const currValue = $scope.fomularEditorValue;
+            if($scope._editor) {
+              var doc = $scope._editor.getDoc();
+              var pos = doc.getCursor();
+              doc.replaceRange(field.propertyName, pos, undefined, 'custom_add');
+              const newCursorPos = {line: pos.line, ch: pos.ch + field.propertyName.split("").length}
+              console.log("newCursorPos",newCursorPos)
+              $scope._editor.focus();
+              doc.setCursor(newCursorPos)
+            }
+            // 
+            // $scope.fomularEditorValue = `${currValue}${field.propertyName}`
           }
 
           $scope.ok = function () {

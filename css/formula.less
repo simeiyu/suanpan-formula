@@ -5,6 +5,9 @@
 body {
   font-size: 14px;
   color: #333;
+  .CodeMirror-hints {
+    z-index: 2000;
+  }
 }
 .mainContainer {
   justify-content: center;
@@ -60,14 +63,16 @@ body {
       .inputArea {
         font-size:20px;
         resize: none;
-        height: calc( 100% - 50px);
+        height: 80%;
         width: 100%;
-        :global {
-          .react-codemirror2 {
-            height: 100%;
-            .CodeMirror {
-              height: 100%;
-            }
+        .CodeMirror {
+          height: 100%;
+          .cm-keyword {
+            color:purple;
+          }
+          .cm-field-name {
+            background-color: rgba(231, 240, 240, 0.5);
+            color:blue;
           }
         }
       }
