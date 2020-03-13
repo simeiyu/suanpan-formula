@@ -309,7 +309,6 @@ app.controller('myCtrl', function($scope, $uibModal) {
           }
 
           $scope.editorOptions = {
-            mode: 'text/html',
             placeholder: '请输入公式',
             // mode:"text/html", //实现代码高亮,
             matchBrackets: true,   //括号匹配
@@ -340,9 +339,11 @@ app.controller('myCtrl', function($scope, $uibModal) {
               // 根据不同情况给list赋值，默认为[]，即不显示提示框。
               const cursorOneCharactersBefore = `${curLine.charAt(start - 1)}`;
               if(cursorOneCharactersBefore === 'I'){
-                list = ['IF','aaaaa'];
+                list = ['IF'];
               } else if (cursorOneCharactersBefore === 'A') {
                 list = ['AND'];
+              } else if (cursorOneCharactersBefore === 'O') {
+                list = ['OR'];
               }
               return {list: list, from: codeMirrorInstance.Pos(cur.line, start-1), to: codeMirrorInstance.Pos(cur.line, end)};
             }
@@ -359,12 +360,6 @@ app.controller('myCtrl', function($scope, $uibModal) {
                console.log("change", instance, changeObj)
                instance.closeHint();
                instance.showHint();
-               if (changeObj.origin === "complete") {
-                const from = {line: changeObj.from.line, ch: changeObj.from.ch};
-                const length = changeObj.text[0].split("").length;
-                const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
-                instance.markText(from,to,{className: 'cm-keyword', selectRight: true, atomic: true})
-               }
                if (changeObj.origin === "custom_add") {
                 const from = {line: changeObj.from.line, ch: changeObj.from.ch};
                 const length = changeObj.text[0].split("").length;
@@ -372,6 +367,20 @@ app.controller('myCtrl', function($scope, $uibModal) {
                 instance.markText(from,to,{className: 'cm-field-name', selectRight: true, atomic: true})
                }
             });
+            _editor.constructor.defineSimpleMode("simplemode", {
+              start: [
+                {regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string"},
+                {regex: /IF|AND|OR/, token: "keyword"},
+                {regex: /true|false|null|undefined/, token: "atom"},
+                {regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i, token: "number"},
+                {regex: /\/(?:[^\\]|\\.)*?\//, token: "variable-3"},
+                {regex: /[-+\/*=<>!]+/, token: "operator"},
+                {regex: /[\{\[\(]/, indent: true},
+                {regex: /[\}\]\)]/, dedent: true},
+                {regex: /[a-z$][\w$]*/, token: "variable"},
+              ]
+            });
+            _editor.setOption('mode', 'simplemode');
           };
 
           var paramsList = {...nodeEl.metadata.def.params}
