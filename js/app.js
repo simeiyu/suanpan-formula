@@ -125,7 +125,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "uuid": "in4",
             "description": {
               "en_US": "input data",
-              "zh_CN": "DD"
+              "zh_CN": "D"
             },
             "display": true,
             "ioType": "in",
@@ -248,6 +248,17 @@ app.controller('myCtrl', function($scope, $uibModal) {
     }
   }
   var popup;
+
+  setFormularValue = function(controlInstUuid, formularStr) {
+    const params = {...$scope.node.metadata.def.params}
+    const keys = Object.keys(params);
+    keys.forEach(key => {
+      if(params[key].controlInstUuid && params[key].controlInstUuid === controlInstUuid) {
+        $scope.node.metadata.def.params[key].value = formularStr;
+        return;
+      }
+    })
+  }
   
   $scope.showFormulaEidtor = function (controlInstUuid) {
     var nodeEl = $scope.node;
@@ -288,6 +299,21 @@ app.controller('myCtrl', function($scope, $uibModal) {
             }
             return result;
           }
+
+          var portsList = [...nodeEl.metadata.def.ports]
+          var currFieldList = [];
+          portsList.forEach(port => {
+            if(port.ioType === 'in') {
+              const portFormat = {
+                id: port.uuid,
+                name: port.description.zh_CN,
+                type: port.subType
+              }
+              const newField = formatField(portFormat);
+              currFieldList.push(newField);
+            }
+          })
+          $scope.currFieldList = currFieldList
 
           $scope.editorOptions = {
             placeholder: '请输入公式',
@@ -333,19 +359,21 @@ app.controller('myCtrl', function($scope, $uibModal) {
             _doc.markClean();
         
             // Events
-            _editor.on("beforeChange", function(){
-              console.log("beforeChange")
-
-            });
             _editor.on("change", function(instance, changeObj){
                console.log("change", instance, changeObj)
                instance.closeHint();
-               instance.showHint();
-               if (changeObj.origin === "custom_add") {
+               if (changeObj.origin.match(/custom_add-/)) {
+                const originPre = changeObj.origin;
+                const name = originPre.replace("custom_add-","")
                 const from = {line: changeObj.from.line, ch: changeObj.from.ch};
                 const length = changeObj.text[0].split("").length;
                 const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
-                instance.markText(from,to,{className: 'cm-field-name', selectRight: true, atomic: true})
+                const spanDom = document.createElement('span');
+                spanDom.innerHTML=name;
+                spanDom.className = 'cm-field-name';
+                instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
+               } else {
+                instance.showHint();
                }
             });
             _editor.constructor.defineSimpleMode("simplemode", {
@@ -363,22 +391,6 @@ app.controller('myCtrl', function($scope, $uibModal) {
             });
             _editor.setOption('mode', 'simplemode');
           };
-
-          var portsList = [...nodeEl.metadata.def.ports]
-          var currFieldList = [];
-          portsList.forEach(port => {
-            if(port.ioType === 'in') {
-              const portFormat = {
-                id: port.uuid,
-                name: port.description.zh_CN,
-                type: port.subType
-              }
-              const newField = formatField(portFormat);
-              currFieldList.push(newField);
-            }
-          })
-          $scope.currFieldList = currFieldList
-
 
           $scope.formularList = [{
             label: '常用函数',
@@ -401,15 +413,17 @@ app.controller('myCtrl', function($scope, $uibModal) {
             if($scope._editor) {
               var doc = $scope._editor.getDoc();
               var pos = doc.getCursor();
-              doc.replaceRange(field.name, pos, undefined, 'custom_add');
-              const newCursorPos = {line: pos.line, ch: pos.ch + field.name.split("").length}
-              console.log("newCursorPos",newCursorPos)
+              doc.replaceRange(field.id, pos, undefined, `custom_add-${field.name}`,);
+              const newCursorPos = {line: pos.line, ch: pos.ch + field.id.split("").length}
               $scope._editor.focus();
               doc.setCursor(newCursorPos)
             }
           }
 
           $scope.ok = function () {
+            let formular = $scope._editor.getValue();
+            console.log("公式结果", formular)
+            setFormularValue(controlInstUuid, formular);
             popup.close();
           };
 
