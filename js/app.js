@@ -317,10 +317,8 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
           $scope.editorOptions = {
             placeholder: '请输入公式',
-            // mode:"text/html", //实现代码高亮,
             matchBrackets: true,   //括号匹配
             autoCloseBrackets:true,	// 是否自动闭合括号
-            // extraKeys: {"Ctrl": "autocomplete"},
             indentUnit: 0, //缩进单位，值为空格数，默认为2 
             smartIndent: false, // 自动缩进,
             lineWrapping: true, // false->scroll, true-> word-break,
@@ -337,22 +335,28 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
             handleShowHint = function () {
               const codeEditor = _editor;
-              const codeMirrorInstance = _editor.constructor;
+              const CodeMirror = _editor.constructor;
               const cur = codeEditor.getCursor();
               const curLine = codeEditor.getLine(cur.line);
               const end = cur.ch;
               const start = end;
-              let list = [];
-              // 根据不同情况给list赋值，默认为[]，即不显示提示框。
-              const cursorOneCharactersBefore = `${curLine.charAt(start - 1)}`;
-              if(cursorOneCharactersBefore === 'I'){
-                list = ['IF'];
-              } else if (cursorOneCharactersBefore === 'A') {
-                list = ['AND'];
-              } else if (cursorOneCharactersBefore === 'O') {
-                list = ['OR'];
+              const keywords = ["AND", "IF", "OR"];
+              // if (/[^\w$_-]/.test(word)) {
+              //   word = ""; start = end = cur.ch;
+              // }
+              const result = [];
+              function add(keywords, charBefore) {
+                keywords.forEach( keyword => {
+                  console.log("aaaaaaaaaaa", charBefore, keyword)
+                  if (charBefore && keyword.lastIndexOf(charBefore, 0) === 0) {
+                    result.push(keyword);
+                  }
+                })
               }
-              return {list: list, from: codeMirrorInstance.Pos(cur.line, start-1), to: codeMirrorInstance.Pos(cur.line, end)};
+              // 根据不同情况给list赋值，默认为[]，即不显示提示框。
+              const oneCharBefore = `${curLine.charAt(start - 1)}`;
+              add(keywords, oneCharBefore);
+              return {list: result, from: CodeMirror.Pos(cur.line, start-1), to: CodeMirror.Pos(cur.line, end)};
             }
             // Options
             _editor.setOption('hintOptions', {hint: handleShowHint, completeSingle: false});
