@@ -81,7 +81,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "uuid": "in1",
             "description": {
               "en_US": "input data",
-              "zh_CN": "A"
+              "zh_CN": "AA"
             },
             "display": true,
             "type": "data",
@@ -103,7 +103,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "uuid": "in2",
             "description": {
               "en_US": "input data",
-              "zh_CN": "B"
+              "zh_CN": "BB"
             },
             "display": true,
             "ioType": "in",
@@ -114,7 +114,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "uuid": "in3",
             "description": {
               "en_US": "input data",
-              "zh_CN": "C"
+              "zh_CN": "CC"
             },
             "display": true,
             "ioType": "in",
@@ -125,7 +125,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "uuid": "in4",
             "description": {
               "en_US": "input data",
-              "zh_CN": "D"
+              "zh_CN": "DD"
             },
             "display": true,
             "ioType": "in",
@@ -289,25 +289,6 @@ app.controller('myCtrl', function($scope, $uibModal) {
             return result;
           }
 
-          handleShowHint = function () {
-            // const codeMirrorInstance = this.codeEditorRef.getCodeMirrorInstance();
-            // this.codeEditor = this.codeEditorRef.getCodeMirror();
-            // const cur = this.codeEditor.getCursor();
-            // const curLine = this.codeEditor.getLine(cur.line);
-            // const end = cur.ch;
-            // const start = end;
-            // let list = [];
-            // // 根据不同情况给list赋值，默认为[]，即不显示提示框。
-            // const cursorOneCharactersBefore = `${curLine.charAt(start - 1)}`;
-            // const fomularList = [...this.fomularList];
-            // if(cursorOneCharactersBefore === 'I'){
-            //   list = ['IF', 'IF1'];
-            // } else if (cursorOneCharactersBefore === 'A') {
-            //   list = ['AND'];
-            // }
-            // return {list: list, from: codeMirrorInstance.Pos(cur.line, start), to: codeMirrorInstance.Pos(cur.line, end)};
-          }
-
           $scope.editorOptions = {
             placeholder: '请输入公式',
             // mode:"text/html", //实现代码高亮,
@@ -383,14 +364,17 @@ app.controller('myCtrl', function($scope, $uibModal) {
             _editor.setOption('mode', 'simplemode');
           };
 
-          var paramsList = {...nodeEl.metadata.def.params}
-          var paramsKeyList = Object.keys(paramsList);
+          var portsList = [...nodeEl.metadata.def.ports]
           var currFieldList = [];
-          paramsKeyList.forEach(key => {
-            if(paramsList[key].defInPortUuid) {
-              const inputField = paramsList[key];
-              const newield = formatField(inputField);
-              currFieldList.push(newield);
+          portsList.forEach(port => {
+            if(port.ioType === 'in') {
+              const portFormat = {
+                id: port.uuid,
+                name: port.description.zh_CN,
+                type: port.subType
+              }
+              const newField = formatField(portFormat);
+              currFieldList.push(newField);
             }
           })
           $scope.currFieldList = currFieldList
@@ -414,18 +398,15 @@ app.controller('myCtrl', function($scope, $uibModal) {
           }
 
           $scope.handleClickAddField = function(field) {
-            const currValue = $scope.fomularEditorValue;
             if($scope._editor) {
               var doc = $scope._editor.getDoc();
               var pos = doc.getCursor();
-              doc.replaceRange(field.propertyName, pos, undefined, 'custom_add');
-              const newCursorPos = {line: pos.line, ch: pos.ch + field.propertyName.split("").length}
+              doc.replaceRange(field.name, pos, undefined, 'custom_add');
+              const newCursorPos = {line: pos.line, ch: pos.ch + field.name.split("").length}
               console.log("newCursorPos",newCursorPos)
               $scope._editor.focus();
               doc.setCursor(newCursorPos)
             }
-            // 
-            // $scope.fomularEditorValue = `${currValue}${field.propertyName}`
           }
 
           $scope.ok = function () {

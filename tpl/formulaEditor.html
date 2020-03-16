@@ -17,7 +17,7 @@
             <ul class="list-group">
               <li class="list-group-item"  ng-repeat="field in currFieldList" track-by="$index" ng-click="handleClickAddField(field)">
                 <span class="badge" ng-class="field.labelClass">{{field.typeLabel}}</span>
-                {{field.propertyName}}
+                {{field.name}}
               </li>
             </ul>
           </div>
