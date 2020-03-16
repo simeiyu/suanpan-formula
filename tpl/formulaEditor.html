@@ -4,7 +4,7 @@
     <div class="headerTitle">{{popupTitle}}</div>
     <div class="headerBtn close modal-close" ng-click="cancel()"><div class="close-icon">&times;</div></div>
   </div>
-  <div class="modal-body" ng-hide="popupLoading" ng-class="{ 'modal-has-footer': popupHasFooter }">
+  <div class="modal-body" ng-hide="popupLoading" style="height:580px">
     <div class="mainBlock">
       <div class="editBlock">
         <div class="blockHeader">{{inputAttr}} =</div>
@@ -45,10 +45,8 @@
   <div class="mask-loading" ng-if="popupLoading">
     <i class="fa fa-spinner loading-icon animation-spin"></i>
   </div>
-  <!-- <div class="modal-footer" style="background-color: #f9f9f9; padding: 5px 10px;"
-    ng-class="{ 'modal-has-footer': popupHasFooter }" ng-hide="popupLoading">
-
-    <button type="button" class="btn btn-xs btn-info" ng-click="ok()">确认</button>
-    <button type="button" class="btn btn-xs" ng-click="cancel()">取消</button>
-  </div> -->
+  <div class="modal-footer modal-has-footer fomular-footer" style="background-color: #f9f9f9; padding: 8px 10px">
+    <button type="button" class="btn btn-info" ng-click="ok()">确认</button>
+    <button type="button" class="btn" ng-click="cancel()">取消</button>
+  </div>
 </div>

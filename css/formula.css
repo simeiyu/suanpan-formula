@@ -1,0 +1,157 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-size: 14px;
+  color: #333;
+}
+body .CodeMirror-hints {
+  z-index: 2000;
+}
+.mainContainer {
+  justify-content: center;
+  height: 100%;
+  overflow: auto;
+  background-color: #ffffff;
+}
+.mainContainer .headerBlock {
+  height: 40px;
+  background-color: #48d1cc;
+  position: relative;
+  color: #ffffff;
+  font-size: 20px;
+  font-family: PingFang SC;
+  font-weight: 500;
+}
+.mainContainer .headerBlock .headerTitle {
+  width: auto;
+  line-height: 40px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  letter-spacing: 2px;
+}
+.mainContainer .headerBlock .headerBtn {
+  float: right;
+  height: 40px;
+  width: 40px;
+}
+.mainContainer .headerBlock .headerBtn .close-icon {
+  height: 40px;
+  width: 40px;
+  font-size: 30px;
+  text-align: center;
+}
+.mainContainer .headerBlock .headerBtn:hover {
+  background: #fc3838;
+}
+.mainContainer .fomular-modal-body {
+  height: 590px;
+}
+.mainContainer .mainBlock {
+  height: 100%;
+}
+.mainContainer .mainBlock .editBlock {
+  height: 45%;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+}
+.mainContainer .mainBlock .editBlock .blockHeader {
+  height: 50px;
+  background-color: rgba(231, 240, 240, 0.5);
+  line-height: 50px;
+  font-size: 20px;
+  font-family: PingFang SC;
+  padding: 0 20px;
+}
+.mainContainer .mainBlock .editBlock .inputArea {
+  font-size: 20px;
+  resize: none;
+  height: 80%;
+  width: 100%;
+}
+.mainContainer .mainBlock .editBlock .inputArea .CodeMirror {
+  height: 100%;
+}
+.mainContainer .mainBlock .editBlock .inputArea .CodeMirror .cm-keyword {
+  color: purple;
+}
+.mainContainer .mainBlock .editBlock .inputArea .CodeMirror .cm-field-name {
+  background-color: rgba(231, 240, 240, 0.5);
+  color: blue;
+}
+.mainContainer .mainBlock .selectBlock {
+  height: 55%;
+  display: flex;
+}
+.mainContainer .mainBlock .selectBlock .commonBox {
+  height: 100%;
+}
+.mainContainer .mainBlock .selectBlock .commonBox .boxTitle {
+  height: 15%;
+  line-height: 60px;
+  font-size: 20px;
+  font-family: PingFang SC;
+  color: #aaaaaa;
+  letter-spacing: 1px;
+}
+.mainContainer .mainBlock .selectBlock .commonBox .boxContent {
+  height: 85%;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+.mainContainer .mainBlock .selectBlock .box1 {
+  width: 30%;
+  margin-right: 20px;
+}
+.mainContainer .mainBlock .selectBlock .box1 .list-group-item {
+  border: none;
+  cursor: pointer;
+}
+.mainContainer .mainBlock .selectBlock .box1 .list-group-item:hover {
+  background-color: #a7dcff;
+}
+.mainContainer .mainBlock .selectBlock .box1 .string-label {
+  color: #07ddd2;
+  background-color: rgba(7, 221, 210, 0.3);
+}
+.mainContainer .mainBlock .selectBlock .box1 .array-label {
+  color: #646464;
+  background-color: rgba(100, 100, 100, 0.3);
+}
+.mainContainer .mainBlock .selectBlock .box1 .number-label {
+  color: #c9b719;
+  background-color: rgba(255, 251, 2, 0.3);
+}
+.mainContainer .mainBlock .selectBlock .box1 .time-label {
+  color: #1bdf01;
+  background-color: rgba(27, 223, 1, 0.3);
+}
+.mainContainer .mainBlock .selectBlock .box2 {
+  width: 20%;
+  margin-right: 20px;
+}
+.mainContainer .mainBlock .selectBlock .box2 ul.abn-tree li.abn-tree-row {
+  background: #ffffff;
+  color: #333;
+}
+.mainContainer .mainBlock .selectBlock .box2 ul.abn-tree li.abn-tree-row:hover {
+  background-color: #a7dcff;
+}
+.mainContainer .mainBlock .selectBlock .box2 ul.abn-tree li.abn-tree-row a {
+  color: #333;
+}
+.mainContainer .mainBlock .selectBlock .box2 .nav-pills > li.active > a,
+.mainContainer .mainBlock .selectBlock .box2 .nav-pills > li.active > a:hover,
+.mainContainer .mainBlock .selectBlock .box2 .nav-pills > li.active > a:focus {
+  color: #333;
+  background-color: #a7dcff;
+}
+.mainContainer .mainBlock .selectBlock .box3 {
+  width: 50%;
+}
+.mainContainer .fomular-footer {
+  height: 50px;
+}
