@@ -4,7 +4,6 @@ var app = angular.module('app', [
   'ngAnimate',
   // 'ngSanitize',
   'ui.bootstrap',
-  'angularBootstrapNavTree',
   'ui.codemirror'
 ]);
 app.controller('myCtrl', function($scope, $uibModal) {
@@ -316,7 +315,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
           $scope.currFieldList = currFieldList
 
           $scope.editorOptions = {
-            placeholder: '请输入公式',
+            placeholder: '请在此输入公式...',
             matchBrackets: true,   //括号匹配
             autoCloseBrackets:true,	// 是否自动闭合括号
             indentUnit: 0, //缩进单位，值为空格数，默认为2 
@@ -366,9 +365,9 @@ app.controller('myCtrl', function($scope, $uibModal) {
             _editor.on("change", function(instance, changeObj){
                console.log("change", instance, changeObj)
                instance.closeHint();
-               if (changeObj.origin.match(/custom_add-/)) {
+               if (changeObj.origin.match(/custom_add-field-/)) {
                 const originPre = changeObj.origin;
-                const name = originPre.replace("custom_add-","")
+                const name = originPre.replace("custom_add-field-","")
                 const from = {line: changeObj.from.line, ch: changeObj.from.ch};
                 const length = changeObj.text[0].split("").length;
                 const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
@@ -376,7 +375,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
                 spanDom.innerHTML=name;
                 spanDom.className = 'cm-field-name';
                 instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
-               } else {
+               } else if(!changeObj.origin.match(/custom_add-formular/)){
                 instance.showHint();
                }
             });
@@ -398,26 +397,42 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
           $scope.formularList = [{
             label: '常用函数',
+            expand: true,
             children: [
               {label: 'IF', format: 'IF(A,B,C)', description: '表示如果满足条件A，那么返回B，否则返回C'}
             ]
           },{
             label: '逻辑函数',
+            expand: true,
             children: [
               {label: 'AND', format: 'AND(逻辑表达式1,逻辑表达式2,...)', description: '如果所有参数都为真，AND函数返回布尔值true，否则返回布尔值 false'},
               {label: 'OR', format: 'OR(逻辑表达式1,逻辑表达式2,...)', description: '如果任意参数为真，OR 函数返回布尔值true；如果所有参数为假，返回布尔值false。'},
             ]
           }]
 
+
+          $scope.handleClickTreeLabel = function(index) {
+            $scope.formularList[index].expand = !$scope.formularList[index].expand
+          }
+
+          $scope.selecFormular = {format: '', description: ''}
           $scope.handleTreeSelect = function(branch) {
-            console.log("aaaaaaaaaaa", branch)
+            $scope.selecFormular = {...branch};
+            if($scope._editor) {
+              var doc = $scope._editor.getDoc();
+              var pos = doc.getCursor();
+              doc.replaceRange(branch.label, pos, undefined, `custom_add-formular`,);
+              const newCursorPos = {line: pos.line, ch: pos.ch + branch.label.split("").length}
+              $scope._editor.focus();
+              doc.setCursor(newCursorPos)
+            }
           }
 
           $scope.handleClickAddField = function(field) {
             if($scope._editor) {
               var doc = $scope._editor.getDoc();
               var pos = doc.getCursor();
-              doc.replaceRange(field.id, pos, undefined, `custom_add-${field.name}`,);
+              doc.replaceRange(field.id, pos, undefined, `custom_add-field-${field.name}`,);
               const newCursorPos = {line: pos.line, ch: pos.ch + field.id.split("").length}
               $scope._editor.focus();
               doc.setCursor(newCursorPos)

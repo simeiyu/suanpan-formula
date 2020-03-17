@@ -25,18 +25,27 @@
         <div class="commonBox box2">
           <div class="boxTitle">函数</div>
           <div class="boxContent">
-            <abn-tree 
-              tree-data="formularList"
-              icon-leaf = ""
-              on-select="handleTreeSelect(branch)"
-            >
-            </abn-tree>
+            <div class="custom-tree" ng-repeat="formularType in formularList" track-by="$index">
+              <div ng-click="handleClickTreeLabel($index)" class="tree-node-title">
+                <div class="tree-title-icon" ng-class="{'transform90':formularType.expand}">&gt;</div>
+                <div class="tree-title-label">{{formularType.label}}</div>
+              </div>
+              <ul class="custom-list-group" ng-hide="!formularType.expand" track-by="$index">
+                <li class="list-group-item"  ng-repeat="formular in formularType.children" track-by="$index" ng-click="handleTreeSelect(formular)">
+                  {{formular.label}}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="commonBox box3">
           <div class="boxTitle">公式示例说明</div>
           <div class="boxContent">
-            
+            <div class="description">
+              <div>{{selecFormular.format}}</div>
+              <div>{{selecFormular.description}}</div>
+            </div>
+            <div class="bottom-tip">请在英文输入法模式下编辑公式</div>
           </div>
         </div>
       </div>
