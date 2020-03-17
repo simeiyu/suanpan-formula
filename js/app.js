@@ -347,7 +347,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
               function add(keywords, charBefore) {
                 keywords.forEach( keyword => {
                   console.log("aaaaaaaaaaa", charBefore, keyword)
-                  if (charBefore && keyword.lastIndexOf(charBefore, 0) === 0) {
+                  if (charBefore && keyword.lastIndexOf(charBefore.toUpperCase(), 0) === 0) {
                     result.push(keyword);
                   }
                 })
@@ -365,18 +365,25 @@ app.controller('myCtrl', function($scope, $uibModal) {
             _editor.on("change", function(instance, changeObj){
                console.log("change", instance, changeObj)
                instance.closeHint();
-               if (changeObj.origin.match(/custom_add-field-/)) {
-                const originPre = changeObj.origin;
-                const name = originPre.replace("custom_add-field-","")
-                const from = {line: changeObj.from.line, ch: changeObj.from.ch};
-                const length = changeObj.text[0].split("").length;
-                const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
-                const spanDom = document.createElement('span');
-                spanDom.innerHTML=name;
-                spanDom.className = 'cm-field-name';
-                instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
-               } else if(!changeObj.origin.match(/custom_add-formular/)){
-                instance.showHint();
+               if (changeObj.origin) {
+                if (changeObj.origin.match(/custom_add-field-/)) {
+                  const originPre = changeObj.origin;
+                  const name = originPre.replace("custom_add-field-","")
+                  const from = {line: changeObj.from.line, ch: changeObj.from.ch};
+                  const length = changeObj.text[0].split("").length;
+                  const to = {line: changeObj.from.line, ch: changeObj.from.ch + length};
+                  const spanDom = document.createElement('span');
+                  spanDom.innerHTML=name;
+                  spanDom.className = 'cm-field-name';
+                  instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
+                 } else if (changeObj.origin==='complete') {
+                  var pos = _doc.getCursor();
+                  _doc.replaceRange("()", pos, undefined, 'custom_add-formular');
+                  const newCursorPos = {line: pos.line, ch: pos.ch+1}
+                  _doc.setCursor(newCursorPos)
+                 } else if (!changeObj.origin.match(/custom_add-formular/)){
+                  instance.showHint();
+                 }
                }
             });
             _editor.constructor.defineSimpleMode("simplemode", {
@@ -389,7 +396,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
                 {regex: /[-+\/*=<>!]+/, token: "operator"},
                 {regex: /[\{\[\(]/, indent: true},
                 {regex: /[\}\]\)]/, dedent: true},
-                {regex: /[a-z$][\w$]*/, token: "variable"},
+                {regex: /[a-zA-Z$][\w$]*/, token: "variable"},
               ]
             });
             _editor.setOption('mode', 'simplemode');
@@ -421,8 +428,8 @@ app.controller('myCtrl', function($scope, $uibModal) {
             if($scope._editor) {
               var doc = $scope._editor.getDoc();
               var pos = doc.getCursor();
-              doc.replaceRange(branch.label, pos, undefined, `custom_add-formular`,);
-              const newCursorPos = {line: pos.line, ch: pos.ch + branch.label.split("").length}
+              doc.replaceRange(`${branch.label}()`, pos, undefined, `custom_add-formular`,);
+              const newCursorPos = {line: pos.line, ch: pos.ch + branch.label.split("").length+1}
               $scope._editor.focus();
               doc.setCursor(newCursorPos)
             }
