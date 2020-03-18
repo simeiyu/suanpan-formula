@@ -424,7 +424,6 @@ app.controller('myCtrl', function($scope, $uibModal) {
 
           $scope.selecFormular = {format: '', description: ''}
           $scope.handleTreeSelect = function(branch) {
-            $scope.selecFormular = {...branch};
             if($scope._editor) {
               var doc = $scope._editor.getDoc();
               var pos = doc.getCursor();
@@ -433,6 +432,10 @@ app.controller('myCtrl', function($scope, $uibModal) {
               $scope._editor.focus();
               doc.setCursor(newCursorPos)
             }
+          }
+
+          $scope.handleTreeHover = function(branch) {
+            $scope.selecFormular = {...branch};
           }
 
           $scope.handleClickAddField = function(field) {

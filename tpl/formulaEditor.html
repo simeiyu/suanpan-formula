@@ -31,7 +31,7 @@
                 <div class="tree-title-label">{{formularType.label}}</div>
               </div>
               <ul class="custom-list-group" ng-hide="!formularType.expand" track-by="$index">
-                <li class="list-group-item"  ng-repeat="formular in formularType.children" track-by="$index" ng-click="handleTreeSelect(formular)">
+                <li class="list-group-item"  ng-repeat="formular in formularType.children" track-by="$index" ng-mouseenter="handleTreeHover(formular)" ng-click="handleTreeSelect(formular)">
                   {{formular.label}}
                 </li>
               </ul>
