@@ -366,7 +366,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
                console.log("change", instance, changeObj)
                instance.closeHint();
                if (changeObj.origin) {
-                if (changeObj.origin.match(/custom_add-field-/)) {
+                if (/custom_add-field-/.test(changeObj.origin)) {
                   const originPre = changeObj.origin;
                   const name = originPre.replace("custom_add-field-","")
                   const from = {line: changeObj.from.line, ch: changeObj.from.ch};
@@ -381,7 +381,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
                   _doc.replaceRange("()", pos, undefined, 'custom_add-formular');
                   const newCursorPos = {line: pos.line, ch: pos.ch+1}
                   _doc.setCursor(newCursorPos)
-                 } else if (!changeObj.origin.match(/custom_add-formular/)){
+                 } else if (!/custom_add-formular/.test(changeObj.origin)){
                   instance.showHint();
                  }
                }
