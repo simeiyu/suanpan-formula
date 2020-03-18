@@ -9,6 +9,18 @@ body {
 body .CodeMirror-hints {
   z-index: 2000;
 }
+body ::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+}
+body ::-webkit-scrollbar {
+  width: 5px;
+}
+body ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+body ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
 .mainContainer {
   justify-content: center;
   height: 100%;
