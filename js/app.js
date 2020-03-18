@@ -340,22 +340,34 @@ app.controller('myCtrl', function($scope, $uibModal) {
               const end = cur.ch;
               const start = end;
               const keywords = ["AND", "IF", "OR"];
-              // if (/[^\w$_-]/.test(word)) {
-              //   word = ""; start = end = cur.ch;
-              // }
+    
+              const lineChars = curLine.split('');
+              var index = end;
+              for(let i = end-1; i >= 0; i-=1) {
+                if(/\w/.test(lineChars[i])) {
+                  index = i;
+                } else {
+                  break;
+                }
+              }
+              var word = '';
+              if(index < end) {
+                word = curLine.slice(index, end);
+              }
               const result = [];
               function add(keywords, charBefore) {
                 keywords.forEach( keyword => {
-                  console.log("aaaaaaaaaaa", charBefore, keyword)
                   if (charBefore && keyword.lastIndexOf(charBefore.toUpperCase(), 0) === 0) {
                     result.push(keyword);
                   }
                 })
               }
               // 根据不同情况给list赋值，默认为[]，即不显示提示框。
-              const oneCharBefore = `${curLine.charAt(start - 1)}`;
-              add(keywords, oneCharBefore);
-              return {list: result, from: CodeMirror.Pos(cur.line, start-1), to: CodeMirror.Pos(cur.line, end)};
+              if(word !== '') {
+                add(keywords, word);
+              }
+              const wordLen = word.split('').length
+              return {list: result, from: CodeMirror.Pos(cur.line, start-wordLen), to: CodeMirror.Pos(cur.line, end)};
             }
             // Options
             _editor.setOption('hintOptions', {hint: handleShowHint, completeSingle: false});
