@@ -7,8 +7,17 @@
   <div class="modal-body" ng-hide="popupLoading" style="height:580px">
     <div class="mainBlock">
       <div class="editBlock">
-        <div class="blockHeader">{{inputAttr}} =</div>
+        <div class="blockHeader"><span>{{inputAttr}} =</span><span class="headerLabel" ng-class="initFormular.labelClass">{{initFormular.type}}</span></div>
         <div class="inputArea" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts='editorOptions'></div>
+      </div>
+      <div class="operatorBlock">
+        <div class="boxTitle">运算符</div>
+        <div class="operator-group">
+          <div class="operator" ng-repeat="operator in operatorList">
+            <div class="operator-name">{{operator.name}}</div>
+            <div class="operator-label" ng-click="handleClickAddOperator(operator)">{{operator.label}}</div>
+          </div>
+        </div>
       </div>
       <div class="selectBlock">
         <div class="commonBox box1">

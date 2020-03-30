@@ -260,17 +260,17 @@ app.controller('myCtrl', function($scope, $uibModal) {
     })
   }
 
-  getFormularValue = function(controlInstUuid) {
+  getFormular = function(controlInstUuid) {
     const params = {...$scope.node.metadata.def.params}
     const keys = Object.keys(params);
-    let formularStr = '';
+    let formular = '';
     keys.forEach(key => {
       if(params[key].controlInstUuid && params[key].controlInstUuid === controlInstUuid) {
-        formularStr = $scope.node.metadata.def.params[key].value;
+        formular = $scope.node.metadata.def.params[key];
         return;
       }
     })
-    return formularStr;
+    return formular;
   }
   
   $scope.showFormulaEidtor = function (controlInstUuid) {
@@ -338,12 +338,18 @@ app.controller('myCtrl', function($scope, $uibModal) {
             autofocus: true,
           };
 
+          let initFormular = getFormular(controlInstUuid);
+          if(initFormular) {
+            initFormular = formatField(initFormular);
+          }
+          
+          $scope.initFormular = initFormular;
           $scope.codemirrorLoaded = function(_editor){
             // Editor part
             $scope._editor = _editor;
             var _doc = _editor.getDoc();
             setTimeout(()=>{
-              const initValue = getFormularValue(controlInstUuid);
+              const initValue = $scope.initFormular.value;
               if(initValue && initValue !== '') {
                 _doc.replaceRange(initValue, {line:0, char:0}, undefined, 'setInitValue');
               }
@@ -456,6 +462,36 @@ app.controller('myCtrl', function($scope, $uibModal) {
             });
             _editor.setOption('mode', 'simplemode');
           };
+
+          $scope.operatorList = [
+            {name: '函数分隔符', label: '.'},
+            {name: '参数引号', label: '""'},
+            {name: '加', label: '+'},
+            {name: '减', label: '-'},
+            {name: '乘', label: '*'},
+            {name: '除', label: '/'},
+            {name: '大于', label: '>'},
+            {name: '小于', label: '<'},
+            {name: '等于', label: '=='},
+            {name: '不等于', label: '!='},
+            {name: '大于等于', label: '>='},
+            {name: '小于等于', label: '<='},
+          ]
+
+          $scope.handleClickAddOperator = function(operator) {
+            if($scope._editor) {
+              var doc = $scope._editor.getDoc();
+              var pos = doc.getCursor();
+              doc.replaceRange(operator.label, pos, undefined, `custom_add-operator`);
+              let chAdded = operator.label.split("").length;
+              if(operator.name === "参数引号" ) {
+                chAdded = 1;
+              }
+              const newCursorPos = {line: pos.line, ch: pos.ch + chAdded}
+              $scope._editor.focus();
+              doc.setCursor(newCursorPos)
+            }
+          }
 
           $scope.formularList = [{
             label: '常用函数',

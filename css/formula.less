@@ -68,22 +68,50 @@ body {
   }
   .mainBlock {
     height: 100%;
+    .string-label {
+      color: rgba(7, 221, 210, 1);
+      background-color: rgba(7, 221, 210, 0.3);
+    }
+    .array-label {
+      color: rgba(100, 100, 100, 1);
+      background-color:rgba(100, 100, 100, 0.3);
+    }
+    .number-label {
+      color: rgba(201, 183, 25,1);
+      background-color: rgba(255, 251, 2, 0.3);
+    }
+    .time-label {
+      color: rgba(27, 223, 1, 1);
+      background-color: rgba(27, 223, 1, 0.3);
+    }
     .editBlock {
-      height: 45%;
+      height: 35%;
       border:1px solid rgba(220,220,220,1);
       border-radius:4px;
       .blockHeader {
-         height: 40px;
-         background-color: rgba(231, 240, 240, 0.5);
-         line-height: 40px;
-         font-size:20px;
-         font-family:PingFang SC;
-         padding: 0 20px
+        height: 40px;
+        background-color: rgba(231, 240, 240, 0.5);
+        line-height: 40px;
+        font-size:20px;
+        font-family:PingFang SC;
+        padding: 0 20px;
+        .headerLabel {
+          float: right;
+          margin: 5px 0;
+          padding: 0px 5px;
+          font-size: 14px;
+          font-weight: bold;
+          line-height: 30px;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: baseline;
+          border-radius: 10px;
+        }
       }
       .inputArea {
         font-size:20px;
         resize: none;
-        height: 205px;
+        height: 148px;
         width: 100%;
         .CodeMirror {
           height: 100%;
@@ -106,8 +134,50 @@ body {
         }
       }
     }
+    .operatorBlock {
+      height: 20%;
+      .boxTitle {
+        height: 40px;
+        line-height: 50px;
+        font-size:20px;
+        font-family:PingFang SC;
+        color: rgba(0, 0, 0, 1);
+        letter-spacing: 1px;
+      }
+      .operator-group {
+        display: flex;
+        height: 80px;
+        .operator {
+          width: 80px;
+          height: 80px;
+          border-top: 1px solid rgba(220,220,220,1);
+          border-left: 1px solid rgba(220,220,220,1);
+          border-bottom: 1px solid rgba(220,220,220,1);
+          .operator-name {
+            height: 40px;
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(220,220,220,1);
+            line-height: 40px;
+            text-align: center;
+          }
+          .operator-label {
+            cursor: pointer;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+
+            &:hover {
+              background-color: rgb(167, 220, 255);
+            }
+          }
+        }
+      }
+      .operator-group .operator:nth-last-child(1) {
+        border-right: 1px solid rgba(220,220,220,1);
+      }
+    }
     .selectBlock {
-      height: 55%;
+      height: 45%;
       display: flex;
       .commonBox {
         height: 100%;
@@ -163,22 +233,6 @@ body {
           &:hover {
             background-color: rgb(167, 220, 255);
           }
-        }
-        .string-label {
-          color: rgba(7, 221, 210, 1);
-          background-color: rgba(7, 221, 210, 0.3);
-        }
-        .array-label {
-          color: rgba(100, 100, 100, 1);
-          background-color:rgba(100, 100, 100, 0.3);
-        }
-        .number-label {
-          color: rgba(201, 183, 25,1);
-          background-color: rgba(255, 251, 2, 0.3);
-        }
-        .time-label {
-          color: rgba(27, 223, 1, 1);
-          background-color: rgba(27, 223, 1, 0.3);
         }
       }
       .box2 {
