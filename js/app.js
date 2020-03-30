@@ -72,7 +72,8 @@ app.controller('myCtrl', function($scope, $uibModal) {
           },
           "__formula": {
             "type": "string",
-            "controlInstUuid": "d6589d001ca311ea970f4ffa408b8947"
+            "controlInstUuid": "d6589d001ca311ea970f4ffa408b8947",
+            "value": "IF(AND(in1>2,in1<3), yes, no)\nIF(in1,in2,in3)\nAND(in1,in2,in3)"
           }
         },
         "ports": [
@@ -258,6 +259,19 @@ app.controller('myCtrl', function($scope, $uibModal) {
       }
     })
   }
+
+  getFormularValue = function(controlInstUuid) {
+    const params = {...$scope.node.metadata.def.params}
+    const keys = Object.keys(params);
+    let formularStr = '';
+    keys.forEach(key => {
+      if(params[key].controlInstUuid && params[key].controlInstUuid === controlInstUuid) {
+        formularStr = $scope.node.metadata.def.params[key].value;
+        return;
+      }
+    })
+    return formularStr;
+  }
   
   $scope.showFormulaEidtor = function (controlInstUuid) {
     var nodeEl = $scope.node;
@@ -324,13 +338,16 @@ app.controller('myCtrl', function($scope, $uibModal) {
             autofocus: true,
           };
 
-          $scope.fomularEditorValue = ""
-
           $scope.codemirrorLoaded = function(_editor){
             // Editor part
             $scope._editor = _editor;
             var _doc = _editor.getDoc();
-            _editor.focus();
+            setTimeout(()=>{
+              const initValue = getFormularValue(controlInstUuid);
+              if(initValue && initValue !== '') {
+                _doc.replaceRange(initValue, {line:0, char:0}, undefined, 'setInitValue');
+              }
+            },0)
 
             handleShowHint = function () {
               const codeEditor = _editor;
@@ -371,14 +388,40 @@ app.controller('myCtrl', function($scope, $uibModal) {
             }
             // Options
             _editor.setOption('hintOptions', {hint: handleShowHint, completeSingle: false});
-            _doc.markClean();
+
+            searchSubStr = function (str,subStr){
+              let positions = [];
+              let pos = str.indexOf(subStr);
+              while(pos>-1){
+                  positions.push(pos);
+                  pos = str.indexOf(subStr,pos+1);
+              }
+              return positions;
+            }
         
             // Events
             _editor.on("change", function(instance, changeObj){
-               console.log("change", instance, changeObj)
-               instance.closeHint();
-               if (changeObj.origin) {
-                if (/custom_add-field-/.test(changeObj.origin)) {
+              console.log("change", instance, changeObj)
+              instance.closeHint();
+              if (changeObj.origin) {
+                if (changeObj.origin==='setInitValue') {
+                  _editor.focus();
+                  const currentLineValue = changeObj.text; // text 行数据
+                  currentLineValue.forEach( (currentValue, index) => {
+                    currFieldList.forEach(field => {
+                      const positions = searchSubStr(currentValue,field.id);
+                      positions.forEach(pos => {
+                        const from = {line: index, ch: pos};
+                        const length = field.id.length;
+                        const to = {line: index, ch: pos + length};
+                        const spanDom = document.createElement('span');
+                        spanDom.innerHTML=field.name;
+                        spanDom.className = 'cm-field-name';
+                        instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
+                      })
+                    })
+                  })
+                } else if (/custom_add-field-/.test(changeObj.origin)) {
                   const originPre = changeObj.origin;
                   const name = originPre.replace("custom_add-field-","")
                   const from = {line: changeObj.from.line, ch: changeObj.from.ch};
@@ -388,15 +431,15 @@ app.controller('myCtrl', function($scope, $uibModal) {
                   spanDom.innerHTML=name;
                   spanDom.className = 'cm-field-name';
                   instance.markText(from,to,{selectRight: true, atomic: true, replacedWith: spanDom})
-                 } else if (changeObj.origin==='complete') {
+                } else if (changeObj.origin==='complete') {
                   var pos = _doc.getCursor();
                   _doc.replaceRange("()", pos, undefined, 'custom_add-formular');
                   const newCursorPos = {line: pos.line, ch: pos.ch+1}
                   _doc.setCursor(newCursorPos)
-                 } else if (!/custom_add-formular/.test(changeObj.origin)){
+                } else if (!/custom_add-formular/.test(changeObj.origin)){
                   instance.showHint();
-                 }
-               }
+                }
+              }
             });
             _editor.constructor.defineSimpleMode("simplemode", {
               start: [
