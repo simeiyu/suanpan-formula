@@ -86,7 +86,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "display": true,
             "type": "data",
             "ioType": "in",
-            "subType": "all"
+            "subType": "array"
           },
           {
             "uuid": "out1",
@@ -108,7 +108,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "display": true,
             "ioType": "in",
             "type": "data",
-            "subType": "all"
+            "subType": "number"
           },
           {
             "uuid": "in3",
@@ -119,7 +119,7 @@ app.controller('myCtrl', function($scope, $uibModal) {
             "display": true,
             "ioType": "in",
             "type": "data",
-            "subType": "all"
+            "subType": "string"
           },
           {
             "uuid": "in4",
@@ -129,7 +129,19 @@ app.controller('myCtrl', function($scope, $uibModal) {
             },
             "display": true,
             "ioType": "in",
-            "type": "data"
+            "type": "data",
+            "subType": "date"
+          },
+          {
+            "uuid": "in5",
+            "description": {
+              "en_US": "input data",
+              "zh_CN": {'KEY':'bbbb'}
+            },
+            "display": true,
+            "ioType": "in",
+            "type": "data",
+            "subType": "JSON"
           }
         ],
         "actionList": [
@@ -292,22 +304,26 @@ app.controller('myCtrl', function($scope, $uibModal) {
             let result = {...field};
             result.typeLabel = result.type;
             result.labelClass = ''
-            switch(field.type) {
-              case 'string':
+            switch(field.type.toUpperCase()) {
+              case 'STRING':
                 result.typeLabel = '文本'
                 result.labelClass = 'string-label'
                 break;
-              case 'array':
+              case 'ARRAY':
                 result.typeLabel = '数组'
                 result.labelClass = 'array-label'
                 break;
-              case 'number':
+              case 'NUMBER':
                 result.typeLabel = '数字'
                 result.labelClass = 'number-label'
                 break;
-              case 'date':
+              case 'DATE':
                 result.typeLabel = '时间戳'
                 result.labelClass = 'time-label'
+                break;
+              case 'JSON':
+                result.typeLabel = 'JSON'
+                result.labelClass = 'json-label'
                 break;
             }
             return result;
@@ -317,10 +333,14 @@ app.controller('myCtrl', function($scope, $uibModal) {
           var currFieldList = [];
           portsList.forEach(port => {
             if(port.ioType === 'in') {
+              let name = port.description.zh_CN;
+              if(port.subType && port.subType.toUpperCase() === "JSON") {
+                name = Object.keys(port.description.zh_CN)[0]
+              }
               const portFormat = {
                 id: port.uuid,
-                name: port.description.zh_CN,
-                type: port.subType
+                name,
+                type: port.subType || ''
               }
               const newField = formatField(portFormat);
               currFieldList.push(newField);
